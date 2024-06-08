@@ -7,12 +7,12 @@ import jwt from "jsonwebtoken"
 const router = express.Router()
 
 const userSchema = z.object({
-    name: z.string().trim().min(1, { message: "Username can't be an empty string!"}),
-    pwd: z.string().trim().min(1, { message: "Password can't be an empty string!" }),
+    name: z.string().trim().min(1, { message: "Username can't be an empty string!" }).max(128, { message: "Username is too long!" }),
+    pwd: z.string().trim().min(1, { message: "Password can't be an empty string!" }).max(128, { message: "Password is too long!" }),
 });
 
 router.post("/create", async (req, res) => {
-    const user = parse(userSchema, req, res)
+    const user = parse(userSchema, req.body, res)
     if (!user) return
 
     const { name, pwd } = user
@@ -22,6 +22,7 @@ router.post("/create", async (req, res) => {
         const pass = await bcrypt.hash(pwd, 10)
         data[name] = {
             pass,
+            msgs: []
         }
         await save()
         res.status(200).end("User created!")
@@ -34,7 +35,6 @@ router.post("/login", async (req, res) => {
 
     const { name, pwd } = user
     if (name in data) {
-        console.log(data, name)
         const works = await bcrypt.compare(pwd, data[name].pass)
         if (works) {
             // Add anything else?
@@ -48,7 +48,13 @@ router.post("/login", async (req, res) => {
 })
 
 export function whoami(token) {
-    const decoded = jwt.verify(token, env.AUTH_SECRET)
-    return data[decoded.name]
+    try {
+        const decoded = jwt.verify(token, env.AUTH_SECRET)
+        return data[decoded.name]
+    } catch (e) {
+        // Might be bad token, might be bad programming
+        console.error(e)
+        return null
+    }
 }
 export default router

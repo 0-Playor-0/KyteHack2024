@@ -7,8 +7,8 @@ export async function save() {
   await writeFile('data.json', Buffer.from(JSON.stringify(data)));
 }
 
-export function parse(schema, req, res) {
-  const { success, data, error } = schema.safeParse(req.body);
+export function parse(schema, body, res) {
+  const { success, data, error } = schema.safeParse(body);
   if (success) return data;
   res.status(400).end(error.issues[0].message);
 }
