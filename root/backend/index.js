@@ -7,8 +7,11 @@ const app = express()
 
 app.use(express.json())
 app.use(cookieParser())
+app.disable("x-powered-by")
+
 app.use(auth)
 app.use(chat)
+
 app.use(express.static("root/frontend"))
 
 app.listen(3000, () => {

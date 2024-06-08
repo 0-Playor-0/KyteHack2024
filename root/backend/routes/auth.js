@@ -36,7 +36,7 @@ const COOKIE_OPTIONS = {
     sameSite: "Lax"
 }
 router.post("/login", async (req, res) => {
-    const user = parse(userSchema, req, res)
+    const user = parse(userSchema, req.body, res)
     if (!user) return
 
     const { name, pwd } = user
