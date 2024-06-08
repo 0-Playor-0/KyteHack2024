@@ -18,7 +18,7 @@
             async function fetchMessage(){
                 try{
                     const response = await fetch('/chat');
-                    const data = await response.json();
+                    const data = await response.json().body;
                     const messageElement = document.createElement('div');
                     for (message in data){
                         const messageElement = document.createElement('div');
