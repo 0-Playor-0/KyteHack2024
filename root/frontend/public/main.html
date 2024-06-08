@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+    </head>
+
+    <body>
+        <h2>Chat with the bot</h2>
+        <div id="input">
+            <input type="text" name="messageInput" placeholder="Enter your messsage here...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+        <div id="messages"></div>
+        <script>
+            const ws = new WebSocket('ws://localhost:3000');
+            const messagesDiv = document.getElementById('messages');
+            
+            //opening the websocket connection
+            ws.onopen = () => {
+                console.log('Connected to the server');
+            };
+
+            //event-handler for recieving messages
+            ws.onmessage = (event) => {
+                const message = document.createElement('div');
+                message.textContent = event.data;
+                messagesDiv.appendChild(message);
+                messagesDiv.scrollTop = messagesDiv.scrollHeight; // Auto-scroll to the bottom
+            };
+            
+            //sending messages on button click event handler
+            function sendMessage() {
+                const input = document.getElementById('messageInput');
+                const message = input.value;
+                if (message) {
+                    ws.send(message);
+                    input.value = '';
+                }
+            }
+        </script>
+    </body>
+
+</html>
