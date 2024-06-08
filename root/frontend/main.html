@@ -35,6 +35,11 @@
             async function sendMessage() {
                 const input = document.getElementById('messageInput');
                 const message = input.value;
+
+                const messageElement = document.createElement('div');
+                messageElement.textContent = message;
+                messagesDiv.appendChild(messageElement);
+
                 if (message) {
                     try {
                         await fetch('/chat', {
@@ -54,7 +59,7 @@
             
             function startPolling() {
                 fetchMessage(); // Initial fetch
-                setInterval(fetchMessage, 5000); // Fetch new messages every 5 seconds
+                setInterval(fetchMessage, 1000); // Fetch new messages every 5 seconds
             }  
 
             // Start polling when the page loads
