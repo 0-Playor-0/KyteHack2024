@@ -6,7 +6,13 @@ import { whoami } from "./auth.js"
 const router = express.Router()
 
 const chatSchema = z.object({
-    msg: z.string().trim().min(1, { message: "That's not a message!" }).max(4000, { message: "That message is too long!" })
+    message: z.string().trim().min(1, { message: "That's not a message!" }).max(4000, { message: "That message is too long!" })
+})
+
+router.get("/chat", (req, res) => {
+    const data = whoami(req.cookies.token)
+    if (data) res.status(200).json(data.msgs).end()
+    else res.status(401).end("Not logged in...")
 })
 
 router.post("/chat", async (req, res) => {
@@ -19,8 +25,8 @@ router.post("/chat", async (req, res) => {
     const data = parse(chatSchema, req.body, res)
     if (!data) return
 
-    const { msg } = data
-    userData.msgs.push(msg)
+    const { message } = data
+    userData.msgs.push(message)
     await save()
     res.status(200).end("Message sent!")
 })

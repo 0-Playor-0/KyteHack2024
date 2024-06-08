@@ -39,12 +39,20 @@ router.post("/login", async (req, res) => {
         if (works) {
             // Add anything else?
             const token = jwt.sign({ name }, env.AUTH_SECRET)
-            res.set({
-                "Set-Cookie": `token=${token}; Max-Age=${1000 * 60 * 60 * 24}; HttpOnly; Path=/; SameSite=Lax; Secure`
+            res.cookie("token", token, {
+                httpOnly: true,
+                maxAge: 1000 * 60 * 60 * 24,
+                path: "/",
+                secure: true,
+                sameSite: "Lax"
             }).status(200).end("Logged in!")
         }
         else res.status(403).end("Wrong password")
     } else res.status(403).end("User doesn't exist")
+})
+
+router.post("/logout", (_, res) => {
+    res.clearCookie('token').status(200).end("Logged out!")
 })
 
 export function whoami(token) {
