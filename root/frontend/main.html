@@ -19,6 +19,8 @@
                 try{
                     const response = await fetch('/chat');
                     const data = await response.json();
+
+                    messagesDiv.innerHTML = '';
                     const messageElement = document.createElement('div');
                     for (message of data){
                         const messageElement = document.createElement('div');
