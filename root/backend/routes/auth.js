@@ -29,6 +29,12 @@ router.post("/create", async (req, res) => {
     }
 })
 
+const COOKIE_OPTIONS = {
+    httpOnly: true,
+    path: "/",
+    secure: true,
+    sameSite: "Lax"
+}
 router.post("/login", async (req, res) => {
     const user = parse(userSchema, req, res)
     if (!user) return
@@ -40,11 +46,8 @@ router.post("/login", async (req, res) => {
             // Add anything else?
             const token = jwt.sign({ name }, env.AUTH_SECRET)
             res.cookie("token", token, {
-                httpOnly: true,
+                ...COOKIE_OPTIONS,
                 maxAge: 1000 * 60 * 60 * 24,
-                path: "/",
-                secure: true,
-                sameSite: "Lax"
             }).status(200).end("Logged in!")
         }
         else res.status(403).end("Wrong password")
@@ -52,7 +55,7 @@ router.post("/login", async (req, res) => {
 })
 
 router.post("/logout", (_, res) => {
-    res.clearCookie('token').status(200).end("Logged out!")
+    res.clearCookie('token', COOKIE_OPTIONS).status(200).end("Logged out!")
 })
 
 export function whoami(token) {
