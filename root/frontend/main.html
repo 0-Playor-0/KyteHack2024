@@ -1,13 +1,24 @@
 <!--https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Client-side_web_APIs/Fetching_data-->
 
 <!DOCTYPE html>
+<style>
+    .box {
+        background-color:aquamarine;
+        border-color:black;
+        border-width:2px;
+    }
+    .leftbubble {
+
+    }
+</style>
+
 <html>
     <head>
         <title>Talk to ai</title>
     </head>
 
     <body>
-        <h2>Chat with the bot</h2>
+        <div class="box"><h2>Chat With The AI</h2></div>
         <div id="input">
             <input type="text" id="messageInput" placeholder="Enter your messsage here...">
             <button onclick="sendMessage()">Send</button>
@@ -38,6 +49,7 @@
 
                 const messageElement = document.createElement('div');
                 messageElement.textContent = message;
+                messageElement.className = "rightbubble";
                 messagesDiv.appendChild(messageElement);
 
                 if (message) {

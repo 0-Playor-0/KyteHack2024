@@ -1,11 +1,9 @@
 import pickle
-import numpy as np
 
 # Load the model
 model_file = open('sentiment-clf.pkl', 'rb')
 model = pickle.load(file)
 
-@app.route('/predict', methods=['POST'])
 def predict(text):
     result = model.predict(text)
     return result
