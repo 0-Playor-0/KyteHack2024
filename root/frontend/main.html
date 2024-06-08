@@ -1,4 +1,4 @@
-<!--reference: https://www.tutorialspoint.com/html/html_websocket.htm-->
+<!--https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Client-side_web_APIs/Fetching_data-->
 
 <!DOCTYPE html>
 <html>
@@ -9,7 +9,7 @@
     <body>
         <h2>Chat with the bot</h2>
         <div id="input">
-            <input type="text" name="messageInput" placeholder="Enter your messsage here...">
+            <input type="text" id="messageInput" placeholder="Enter your messsage here...">
             <button onclick="sendMessage()">Send</button>
         </div>
         <div id="messages"></div>
@@ -17,7 +17,7 @@
             const messagesDiv = document.getElementById('messages');
             async function fetchMessage(){
                 try{
-                    const response = await fetch('/server');
+                    const response = await fetch('/chat');
                     const data = await response.json();
                     const messageElement = document.createElement('div');
                     for (message in data){
@@ -35,14 +35,13 @@
                 const message = input.value;
                 if (message) {
                     try {
-                        await fetch('/server', {
+                        await fetch('/chat', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
                             },
                             body: JSON.stringify({message})
                         });
-                        input.value = '';
                     } catch (error) {
                         console.error('Error sending message:', error);
                     }
@@ -50,13 +49,15 @@
             }
 
             // Polling function to repeatedly fetch new messages
+            
             function startPolling() {
-                fetchMessages(); // Initial fetch
-                setInterval(fetchMessages, 5000); // Fetch new messages every 5 seconds
+                fetchMessage(); // Initial fetch
+                setInterval(fetchMessage, 5000); // Fetch new messages every 5 seconds
             }  
 
             // Start polling when the page loads
             window.onload = startPolling;
+            
         </script>
     </body>
 
