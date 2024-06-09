@@ -40,7 +40,7 @@ async function gimmme(url, input) {
     }
 }
 
-const APIS = ["https://fcf4-34-16-163-244.ngrok-free.app/feeling_pred", "https://75d2-34-90-6-167.ngrok-free.app/feeling_pred"]
+const APIS = ["https://d3f8-35-201-212-43.ngrok-free.app/feeling_pred", "https://d79c-35-245-112-115.ngrok-free.app/toxicity_pred"]
 
 router.post("/chat", async (req, res) => {
     const userData = whoami(req.cookies.token)
