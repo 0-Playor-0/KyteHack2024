@@ -30,13 +30,15 @@
             }
 
             #logout {
-                display:inline-block;
                 background-color:aquamarine;
                 color: black;
-                padding: 5px 5px;
+                padding: 10px 20px;
                 border: none;
                 cursor: pointer;
+                border-radius: 20px;
+                margin-bottom:5px;
             }
+            
             #submit {
                 background-color:aquamarine;
                 color: black;
@@ -75,7 +77,7 @@
 
     <body>
         <div class="box">
-            <h1>Chat with the AI <button id="logout" onclick="logout()">Logout</button></h1>
+            <h1>Chat with the AI</h1> <button id="logout" onclick="logout()">Logout</button>
         </div>
         <div id="input">
             <input type="text" id="messageInput" placeholder="Enter your messsage here...">
