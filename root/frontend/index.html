@@ -55,7 +55,7 @@
                 display:inline-block;
                 background-color:blue;
                 color: white;
-                margin: 0px 0px;
+                margin: 8px 5px;
                 padding: 10px 20px;
                 text-align: left;
                 border-radius: 15px 40px 40px;
@@ -129,12 +129,12 @@
                 const input = document.getElementById('messageInput');
                 const message = input.value;
                 input.value = '';
-                const messageElement = document.createElement('div');
-                messageElement.textContent = message;
-                messageElement.className = "clientmsg";
-                messagesDiv.appendChild(messageElement);
 
-                if (message) {
+                if (message.length !== 0) {
+                    const messageElement = document.createElement('div');
+                    messageElement.textContent = message;
+                    messageElement.className = "clientmsg";
+                    messagesDiv.appendChild(messageElement);
                     try {
                         await fetch('/chat', {
                             method: 'POST',
