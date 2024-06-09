@@ -26,8 +26,10 @@ async function gimmme(url, input) {
         })
     })
 
+    const text = await resp.text()
+
     if (resp.status === 200) {
-        return JSON.parse(`{${(await resp.text()).slice(1, -3)
+        return JSON.parse(`{${text.slice(1, -3)
             .toLowerCase()
             .split("\\n")
             .map(i => {
@@ -35,8 +37,7 @@ async function gimmme(url, input) {
             return `"${h}": ${j}`
         }).join(",")}}`)
     } else {
-        const respData = await resp.text()
-        throw new Error(`${resp.status}: ${respData}`)
+        throw new Error(`${resp.status}: ${text}`)
     }
 }
 
