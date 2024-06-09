@@ -84,4 +84,10 @@ router.post("/chat", async (req, res) => {
     }
 })
 
+router.get("/report", (req, res) => {
+    const userData = whoami(req.cookies.token)
+    if (userData) res.status(200).json(userData.stats)
+    else res.status(401).end("Not logged in...")
+})
+
 export default router
