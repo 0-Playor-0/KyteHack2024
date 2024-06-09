@@ -24,22 +24,8 @@
                 padding: 5px 5px;
                 text-align: center;
             }
-            .leftbubble {
-                background-color:blue;
-                
-            }
 
-            #logout {
-                background-color:aquamarine;
-                color: black;
-                padding: 10px 20px;
-                border: none;
-                cursor: pointer;
-                border-radius: 20px;
-                margin-bottom:5px;
-            }
-            
-            #submit {
+            button {
                 background-color:aquamarine;
                 color: black;
                 padding: 10px 10px;
@@ -53,31 +39,75 @@
                 opacity: 0.7;
             }
 
-            .clientmsg{
-                display:inline-block;
-                background-color:blue;
-                color: white;
-                margin: 8px 5px;
-                padding: 10px 20px;
+            .clientmsg {
                 text-align: left;
+            }
+
+            .botmsg {
+                text-align: right;
+            }
+
+            .clientmsg p {
+                background-color:blue;
                 border-radius: 15px 40px 40px;
             }
 
-            .botmsg{
-                display:inline-block;
+            .botmsg p{
                 background-color:gray;
+                border-radius: 40px 15px 40px 40px;
+            }
+
+            #messages {
+                overflow-y: scroll;
+                height: 50vh;
+            }
+
+            #messages div {
+                margin-top: 10px;
+            }
+
+            #messages p {
+                display: inline-block;
                 color: white;
                 margin: 8px 0px;
                 padding: 10px 20px;
-                text-align: right;
-                border-radius: 40px 15px 40px 40px;
+            }
+
+            @keyframes bounce {
+                0%, 100% {
+                    bottom: 0;
+                }
+
+                50% {
+                    bottom: 15px;
+                }
+            }
+
+            .bounce {
+                position: relative;
+                animation-duration: 1s;
+                animation-iteration-count: infinite;
+                animation-name: bounce;
+                animation-timing-function: cubic-bezier(.25,1.01,.56,.67);
+            }
+
+            .b1 {
+                animation-delay: 0.3s;
+            }
+
+            .b2 {
+                animation-delay: 0.5s;
+            }
+
+            .b3 {
+                animation-delay: 0.7s;
             }
         </style>
     </head>
 
     <body>
         <div class="box">
-            <h1>Chat with the AI</h1> <button id="logout" onclick="logout()">Logout</button>
+            <h1>Chat with the AI <button id="logout" onclick="logout()">Logout</button></h1>
         </div>
         <div id="input">
             <input type="text" id="messageInput" placeholder="Enter your messsage here...">
@@ -88,10 +118,6 @@
             async function logout() {
                 const resp = await fetch("/logout", {
                     method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body:{}
                 })
                 if (resp.status === 200) window.location.href = "/login"
                 else {
@@ -102,28 +128,32 @@
 
 
             const messagesDiv = document.getElementById('messages');
-            async function fetchMessage(){
-                try{
-                    const response = await fetch('/chat');
-                    const data = await response.json();
+            let curr = [];
+            let scroll = true
 
-                    messagesDiv.innerHTML = '';
-                    for (chunk of data){
+            function updateMessage(){
+                    let html = ""
+                    for (const chunk of curr){
                         clientMessage = chunk['msg'];
                         botMessage = chunk['botmsg'];
-                        
-                        const clientElement = document.createElement('div');
-                        clientElement.textContent = clientMessage;
-                        clientElement.className = "clientmsg";
-                        messagesDiv.appendChild(clientElement);
 
-                        const botElement = document.createElement('div');
-                        botElement.textContent = botMessage;
-                        botElement.className = "botmsg";
-                        messagesDiv.appendChild(botElement);
+                        const bothtml = botMessage === "..." ? `<span class="bounce b1">.</span><span class="bounce b2">.</span><span class="bounce b3">.</span>` : botMessage
+                        html += `<div class="clientmsg"><p>${clientMessage}</p></div><div class="botmsg"><p>${bothtml}</p></div>`
                     }
-                } catch (error){
-                    console.error('Error fetching message:', error);
+                    messagesDiv.innerHTML = html
+                    messagesDiv.lastChild?.scrollIntoView({ behavior: "smooth", block: "end"})
+            }
+
+            async function fetchMessage() {
+                try {
+                    const response = await fetch('/chat');
+                    curr = await response.json();
+                    if (scroll) {
+                        updateMessage()
+                        scroll = false
+                    }
+                } catch (e) {
+                    console.error("Something bad happened...", e)
                 }
             }
             
@@ -131,12 +161,14 @@
                 const input = document.getElementById('messageInput');
                 const message = input.value;
                 input.value = '';
+                const messageElement = document.createElement('div');
+                curr.push({
+                    msg: message,
+                    botmsg: "..."
+                })
+                updateMessage()
 
-                if (message.length !== 0) {
-                    const messageElement = document.createElement('div');
-                    messageElement.textContent = message;
-                    messageElement.className = "clientmsg";
-                    messagesDiv.appendChild(messageElement);
+                if (message) {
                     try {
                         await fetch('/chat', {
                             method: 'POST',
@@ -145,6 +177,7 @@
                             },
                             body: JSON.stringify({message})
                         });
+                        scroll = true
                     } catch (error) {
                         console.error('Error sending message:', error);
                     }
