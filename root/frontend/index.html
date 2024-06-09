@@ -73,19 +73,19 @@
                     const data = await response.json();
 
                     messagesDiv.innerHTML = '';
-                    var messageElement = document.createElement('div');
                     for (chunk of data){
                         clientMessage = chunk['msg'];
                         botMessage = chunk['botmsg'];
-                        const messageElement = document.createElement('div');
-                        messageElement.textContent = clientMessage;
-                        messageElement.className = "clientmsg";
-                        messagesDiv.appendChild(messageElement);
+                        
+                        const clientElement = document.createElement('div');
+                        clientElement.textContent = clientMessage;
+                        clientElement.className = "clientmsg";
+                        messagesDiv.appendChild(clientElement);
 
-                        messageElement = document.createElement('div');
-                        messageElement.textContent = botMessage;
-                        messageElement.className = "botmsg";
-                        messagesDiv.appendChild(messageElement);
+                        const botElement = document.createElement('div');
+                        botElement.textContent = botMessage;
+                        botElement.className = "botmsg";
+                        messagesDiv.appendChild(botElement);
                     }
                 } catch (error){
                     console.error('Error fetching message:', error);
