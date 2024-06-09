@@ -73,7 +73,7 @@
                     const data = await response.json();
 
                     messagesDiv.innerHTML = '';
-                    const messageElement = document.createElement('div');
+                    var messageElement = document.createElement('div');
                     for (chunk of data){
                         clientMessage = chunk['msg'];
                         botMessage = chunk['botmsg'];
@@ -116,14 +116,12 @@
                 }
             }
 
-            // Polling function to repeatedly fetch new messages
             
             function startPolling() {
-                fetchMessage(); // Initial fetch
-                setInterval(fetchMessage, 1000); // Fetch new messages every 5 seconds
+                fetchMessage();
+                setInterval(fetchMessage, 1000); 
             }  
 
-            // Start polling when the page loads
             window.onload = startPolling;
             
         </script>
