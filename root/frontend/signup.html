@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body{
+                font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            }
+
+            input[type="text"]{
+                width: 100%;
+                padding: 12px 20px;
+                margin: 8px 0;
+                display: inline-block;
+                border: 1px solid #ccc;
+                box-sizing: border-box;
+            }
+
+            button {
+                background-color:aquamarine;
+                color: black;
+                padding: 14px 20px;
+                margin: 8px 0;
+                border: none;
+                cursor: pointer;
+                width: 100%;
+            }
+
+            button:hover {
+                opacity: 0.7;
+            }
+        </style>
+        <title>Create Account</title>
+    </head>
+    <body>
+        <div>
+            <h2>Already have an account? <a href="/login">Log in</a> now!</h2>
+            <label for="username">Username</label>
+            <input type="text" id="username" placeholder="Username Required" required>
+            <label for="password">Password</label>
+            <input type="text" id="password" placeholder="Password Required" required>
+            <button type="submit" onclick="submit()">Create Account</button>
+        </div>
+        <script>
+            const name = document.getElementById("username")
+            const pwd = document.getElementById("password")
+            async function submit() {
+                const resp = await fetch("/create", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: name.value,
+                        pwd: pwd.value
+                    })
+                })
+                if (resp.status === 200) window.location.href = "/login"
+                else {
+                    const r = await resp.text()
+                    alert(r)
+                }
+            }
+        </script>
+    </body>
+</html>
+
