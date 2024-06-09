@@ -46,7 +46,6 @@
             const name = document.getElementById("username")
             const pwd = document.getElementById("password")
             async function submit() {
-                console.log("h")
                 const resp = await fetch("/login", {
                     method: "POST",
                     headers: {

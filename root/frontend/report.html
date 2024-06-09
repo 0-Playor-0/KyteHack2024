@@ -2,11 +2,27 @@
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <style>
+            body{
+                font-family:'Courier New', Courier, monospace;
+            }
+            button {
+                background-color:aquamarine;
+                color: black;
+                padding: 10px 10px;
+                margin: 8px 0;
+                border: none;
+                cursor: pointer;
+                width: 100%;
+            }
+        </style>
     </head>
 
     <body style="font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif">
         <div>
-            <h2 style="text-align:center">June</h2>
+            <h1 style="text-align:center">June</h1>
+            <button onclick="fastForward()" style="font-size:20px;"><b>Go to next day</b></button> 
         </div>
 
         <table bgcolor="lightgrey" align="center"
@@ -83,4 +99,21 @@
         </tbody>
     </table>
     </body>
+
+    <script>
+        var day = 1;
+        async function fastForward(){
+            const resp = await fetch("/nextday", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        "day":day
+                    })
+            })
+
+            //do stuff with resp
+        }
+    </script>
 </html>
