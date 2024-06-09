@@ -22,7 +22,8 @@ router.post("/create", async (req, res) => {
         const pass = await bcrypt.hash(pwd, 10)
         data[name] = {
             pass,
-            msgs: []
+            msgs: [],
+            stats: []
         }
         await save()
         res.status(200).end("User created!")

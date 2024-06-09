@@ -71,14 +71,15 @@ router.post("/chat", async (req, res) => {
         userData.msgs.push({
             msg: message,
             botmsg,
-            stats: {
-                ...emo,
-                ...tox
-            },
+        })
+        userData.stats.push({
+            ...emo,
+            ...tox
         })
         await save()
         res.status(200).end("Message sent!")
     } catch (e) {
+        console.error(e)
         res.status(500).end("Something went wrong...")
     }
 })
