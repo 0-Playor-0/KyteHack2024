@@ -118,10 +118,6 @@
             async function logout() {
                 const resp = await fetch("/logout", {
                     method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body:{}
                 })
                 if (resp.status === 200) window.location.href = "/login"
                 else {
