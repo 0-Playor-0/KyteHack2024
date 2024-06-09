@@ -69,7 +69,7 @@ router.post("/chat", async (req, res) => {
             })
         ])
 
-        const botmsg = chat.choices.find(i.finish_reason === "stop")?.message.content ?? ""
+        const botmsg = chat.choices.find(i => i.finish_reason === "stop")?.message.content ?? ""
 
         userData.msgs.push({
             msg: message,
