@@ -1,6 +1,6 @@
 import express from "express"
 import { z } from "zod"
-import { parse, save } from "../core.js"
+import { openai, parse, save } from "../core.js"
 import { whoami } from "./auth.js"
 
 const router = express.Router()
@@ -15,6 +15,33 @@ router.get("/chat", (req, res) => {
     else res.status(401).end("Not logged in...")
 })
 
+async function gimmme(url, input) {
+    const resp = await fetch(url, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            StringInput: input
+        })
+    })
+
+    if (resp.status === 200) {
+        return JSON.parse(`{${(await resp.text()).slice(1, -3)
+            .toLowerCase()
+            .split("\\n")
+            .map(i => {
+            const [h, j] = i.split(": ")
+            return `"${h}": ${j}`
+        }).join(",")}}`)
+    } else {
+        const respData = await resp.text()
+        throw new Error(`${resp.status}: ${respData}`)
+    }
+}
+
+const APIS = ["https://fcf4-34-16-163-244.ngrok-free.app/feeling_pred", "https://75d2-34-90-6-167.ngrok-free.app/feeling_pred"]
+
 router.post("/chat", async (req, res) => {
     const userData = whoami(req.cookies.token)
     if (!userData) {
@@ -26,9 +53,34 @@ router.post("/chat", async (req, res) => {
     if (!data) return
 
     const { message } = data
-    userData.msgs.push(message)
-    await save()
-    res.status(200).end("Message sent!")
+
+    try {
+        const [emo, tox, chat] = await Promise.all([
+            ...APIS.map(i => gimmme(i, message)),
+            openai.chat.completions.create({
+                messages: [{
+                    role: "user",
+                    content: message
+                }],
+                model: "gpt-3.5-turbo"
+            })
+        ])
+
+        const botmsg = chat.choices.find(i.finish_reason === "stop")?.message.content ?? ""
+
+        userData.msgs.push({
+            msg: message,
+            botmsg,
+            stats: {
+                ...emo,
+                ...tox
+            },
+        })
+        await save()
+        res.status(200).end("Message sent!")
+    } catch (e) {
+        res.status(500).end("Something went wrong...")
+    }
 })
 
 export default router
