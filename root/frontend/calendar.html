@@ -62,7 +62,8 @@
             })
             var row = 0;
             var c = first;
-            const data = resp.json();
+            const data = await resp.json();
+            console.log(data[0]);
             const row0 = cal.insertRow(0);
             const row1 = cal.insertRow(1);
             const row2 = cal.insertRow(2);
@@ -70,16 +71,13 @@
             const row4 = cal.insertRow(4);
             const rows = [row0, row1, row2, row3, row4, row];
 
-
-            for (day of data){
-                if (c == 7) row++; c=0;
-                const cell = rows[row].insertCell(c);
-                for (var key in day){
-                    const emotion = document.createElement('div');
-                    emotion.textContent = day[key];
-                    cell.appendChild(emotion)
-                }
+            const cell = row0.insertCell(0);
+            for(emo in data[0]){
+                const emotion = document.createElement('div');
+                emotion.textContent = emo + ": " + data[0][emo];
+                cell.appendChild(emotion)
             }
+
         }
 
         fetchReport();
