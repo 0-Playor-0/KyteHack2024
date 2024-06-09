@@ -6,7 +6,7 @@ import { whoami } from "./auth.js"
 const router = express.Router()
 
 const chatSchema = z.object({
-    message: z.string().trim().min(1, { message: "That's not a message!" }).max(4000, { message: "That message is too long!" })
+    message: z.string().trim().min(1, { message: "That's not a message!" }).max(1000, { message: "That message is too long!" })
 })
 
 router.get("/chat", (req, res) => {
@@ -55,16 +55,23 @@ router.post("/chat", async (req, res) => {
     const { message } = data
 
     try {
+        // Keep last 10 messages (9 from previous, 1 from now)
+        const out = userData.msgs.slice(-9).map(({ msg }) => ({
+            role: "user",
+            content: msg
+        })).concat({ 
+            role: "user",
+            content: message
+        })
+
         const [emo, tox, chat] = await Promise.all([
-            ...APIS.map(i => gimmme(i, message)),
+            //...APIS.map(i => gimmme(i, message)),
+            {}, {},
             openai.chat.completions.create({
                 messages: [{
                     role: "system",
                     content: "Act as a therapist for people who may be struggling with mental health problems."
-                }, {
-                    role: "user",
-                    content: message
-                }],
+                }, ...out],
                 model: "gpt-3.5-turbo"
             })
         ])

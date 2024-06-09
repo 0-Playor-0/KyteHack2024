@@ -24,10 +24,6 @@
                 padding: 5px 5px;
                 text-align: center;
             }
-            .leftbubble {
-                background-color:blue;
-                
-            }
 
             button {
                 background-color:aquamarine;
@@ -43,24 +39,68 @@
                 opacity: 0.7;
             }
 
-            .clientmsg{
-                display:inline-block;
-                background-color:blue;
-                color: white;
-                margin: 8px 0px;
-                padding: 10px 20px;
+            .clientmsg {
                 text-align: left;
+            }
+
+            .botmsg {
+                text-align: right;
+            }
+
+            .clientmsg p {
+                background-color:blue;
                 border-radius: 15px 40px 40px;
             }
 
-            .botmsg{
-                display:inline-block;
+            .botmsg p{
                 background-color:gray;
+                border-radius: 40px 15px 40px 40px;
+            }
+
+            #messages {
+                overflow-y: scroll;
+                height: 60vh;
+            }
+
+            #messages div {
+                margin: 10px;
+            }
+
+            #messages p {
+                display: inline-block;
                 color: white;
                 margin: 8px 0px;
                 padding: 10px 20px;
-                text-align: right;
-                border-radius: 40px 15px 40px 40px;
+            }
+
+            @keyframes bounce {
+                0%, 100% {
+                    top: 0;
+                }
+
+                50% {
+                    bottom: 15px;
+                }
+            }
+
+            .bounce {
+                position: relative;
+                animation-duration: 2s;
+                animation-iteration-count: infinite;
+                animation-name: bounce;
+                animation-timing-function: linear;
+            }
+
+            .b1 {
+                animation-delay: 0.3s;
+            }
+
+            .b2 {
+                animation-delay: 0.5s;
+            }
+
+            .b3 {
+                animation-delay: 1.5s;
             }
         </style>
     </head>
@@ -74,28 +114,28 @@
         <div id="messages"></div>
         <script>
             const messagesDiv = document.getElementById('messages');
-            async function fetchMessage(){
-                try{
-                    const response = await fetch('/chat');
-                    const data = await response.json();
+            let curr = [];
 
-                    messagesDiv.innerHTML = '';
-                    for (chunk of data){
+            function updateMessage(){
+                    let html = ""
+                    for (const chunk of curr){
                         clientMessage = chunk['msg'];
                         botMessage = chunk['botmsg'];
-                        
-                        const clientElement = document.createElement('div');
-                        clientElement.textContent = clientMessage;
-                        clientElement.className = "clientmsg";
-                        messagesDiv.appendChild(clientElement);
 
-                        const botElement = document.createElement('div');
-                        botElement.textContent = botMessage;
-                        botElement.className = "botmsg";
-                        messagesDiv.appendChild(botElement);
+                        const bothtml = botMessage === "..." ? `<span class="bounce b1">.</span><span class="bounce b2">.</span><span class="bounce b3">.</span>` : botMessage
+                        html += `<div class="clientmsg"><p>${clientMessage}</p></div><div class="botmsg"><p>${bothtml}</p></div>`
                     }
-                } catch (error){
-                    console.error('Error fetching message:', error);
+                    messagesDiv.innerHTML = html
+                    messagesDiv.lastChild.scrollIntoView({ behavior: "smooth", block: "end"})
+            }
+
+            async function fetchMessage() {
+                try {
+                    const response = await fetch('/chat');
+                    curr = await response.json();
+                    updateMessage()
+                } catch (e) {
+                    console.error("Something bad happened...", e)
                 }
             }
             
@@ -104,9 +144,11 @@
                 const message = input.value;
                 input.value = '';
                 const messageElement = document.createElement('div');
-                messageElement.textContent = message;
-                messageElement.className = "clientmsg";
-                messagesDiv.appendChild(messageElement);
+                curr.push({
+                    msg: message,
+                    botmsg: "..."
+                })
+                updateMessage()
 
                 if (message) {
                     try {
