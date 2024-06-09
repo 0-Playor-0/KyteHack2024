@@ -126,7 +126,7 @@
                         html += `<div class="clientmsg"><p>${clientMessage}</p></div><div class="botmsg"><p>${bothtml}</p></div>`
                     }
                     messagesDiv.innerHTML = html
-                    messagesDiv.lastChild.scrollIntoView({ behavior: "smooth", block: "end"})
+                    messagesDiv.lastChild?.scrollIntoView({ behavior: "smooth", block: "end"})
             }
 
             async function fetchMessage() {
