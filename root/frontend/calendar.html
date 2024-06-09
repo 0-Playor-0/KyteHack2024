@@ -63,7 +63,7 @@
             var row = 0;
             var c = first;
             const data = await resp.json();
-            console.log(data[0]);
+            console.log(data[data.length-1]);
             const row0 = cal.insertRow(0);
             const row1 = cal.insertRow(1);
             const row2 = cal.insertRow(2);
@@ -74,7 +74,7 @@
             const cell = row0.insertCell(0);
             for(emo in data[0]){
                 const emotion = document.createElement('div');
-                emotion.textContent = emo + ": " + data[0][emo];
+                emotion.textContent = emo + ": " + data[data.length-1][emo];
                 cell.appendChild(emotion)
             }
 
