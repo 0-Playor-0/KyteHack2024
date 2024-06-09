@@ -65,8 +65,7 @@ router.post("/chat", async (req, res) => {
         })
 
         const [emo, tox, chat] = await Promise.all([
-            //...APIS.map(i => gimmme(i, message)),
-            {}, {},
+            ...APIS.map(i => gimmme(i, message)),
             openai.chat.completions.create({
                 messages: [{
                     role: "system",
