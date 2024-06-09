@@ -29,7 +29,15 @@
                 
             }
 
-            button {
+            #logout {
+                display:inline-block;
+                background-color:aquamarine;
+                color: black;
+                padding: 5px 5px;
+                border: none;
+                cursor: pointer;
+            }
+            #submit {
                 background-color:aquamarine;
                 color: black;
                 padding: 10px 10px;
@@ -47,7 +55,7 @@
                 display:inline-block;
                 background-color:blue;
                 color: white;
-                margin: 8px 0px;
+                margin: 0px 0px;
                 padding: 10px 20px;
                 text-align: left;
                 border-radius: 15px 40px 40px;
@@ -66,13 +74,31 @@
     </head>
 
     <body>
-        <div class="box"><h2>Chat with the AI</h2></div>
+        <div class="box">
+            <h1>Chat with the AI <button id="logout" onclick="logout()">Logout</button></h1>
+        </div>
         <div id="input">
             <input type="text" id="messageInput" placeholder="Enter your messsage here...">
-            <button onclick="sendMessage()" style="font-size:30px;"><b>Send</b></button>
+            <button id="submit" onclick="sendMessage()" style="font-size:30px;"><b>Send</b></button>
         </div>
         <div id="messages"></div>
         <script>
+            async function logout() {
+                const resp = await fetch("/logout", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body:{}
+                })
+                if (resp.status === 200) window.location.href = "/login"
+                else {
+                    const r = await resp.text()
+                    alert(r)
+                }
+            }
+
+
             const messagesDiv = document.getElementById('messages');
             async function fetchMessage(){
                 try{
@@ -123,7 +149,6 @@
                 }
             }
 
-            
             function startPolling() {
                 fetchMessage();
                 setInterval(fetchMessage, 1000); 
