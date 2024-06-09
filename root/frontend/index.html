@@ -41,6 +41,20 @@
             button:hover {
                 opacity: 0.7;
             }
+
+            .clientmsg{
+                background-color:blue;
+                color: white;
+                margin: 8px 0px;
+                text-align: left;
+            }
+
+            .botmsg{
+                background-color:gray;
+                color: white;
+                margin: 8px 0px;
+                text-align: right;
+            }
         </style>
     </head>
 
@@ -60,9 +74,17 @@
 
                     messagesDiv.innerHTML = '';
                     const messageElement = document.createElement('div');
-                    for (message of data){
+                    for (chunk of data){
+                        clientMessage = chunk['msg'];
+                        botMessage = chunk['botmsg'];
                         const messageElement = document.createElement('div');
-                        messageElement.textContent = message;
+                        messageElement.textContent = clientMessage;
+                        messageElement.className = "clientmsg";
+                        messagesDiv.appendChild(messageElement);
+
+                        messageElement = document.createElement('div');
+                        messageElement.textContent = botMessage;
+                        messageElement.className = "botmsg";
                         messagesDiv.appendChild(messageElement);
                     }
                 } catch (error){
@@ -76,7 +98,7 @@
 
                 const messageElement = document.createElement('div');
                 messageElement.textContent = message;
-                messageElement.className = "rightbubble";
+                messageElement.className = "clientmsg";
                 messagesDiv.appendChild(messageElement);
 
                 if (message) {
