@@ -59,6 +59,9 @@ router.post("/chat", async (req, res) => {
             ...APIS.map(i => gimmme(i, message)),
             openai.chat.completions.create({
                 messages: [{
+                    role: "system",
+                    content: "Act as a therapist for people who may be struggling with mental health problems."
+                }, {
                     role: "user",
                     content: message
                 }],
