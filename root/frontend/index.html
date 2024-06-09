@@ -107,7 +107,9 @@
 
     <body>
         <div class="box">
-            <h1>Chat with the AI <button id="logout" onclick="logout()">Logout</button></h1>
+            <h1>Chat with the AI</h1>
+            <button id="logout" onclick="logout()">Logout</button>
+            <a href="/calendar">Get your monthly report</a>
         </div>
         <div id="input">
             <input type="text" id="messageInput" placeholder="Enter your messsage here...">
@@ -161,6 +163,8 @@
                 const input = document.getElementById('messageInput');
                 const message = input.value;
                 input.value = '';
+                if (message.length == 0) return;
+
                 const messageElement = document.createElement('div');
                 curr.push({
                     msg: message,
