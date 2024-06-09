@@ -1,0 +1,110 @@
+<!--https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Client-side_web_APIs/Fetching_data-->
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body{
+                font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            }
+            input[type="text"]{
+                width: 100%;
+                padding: 12px 20px;
+                margin: 8px 0;
+                display: inline-block;
+                border: 1px solid #ccc;
+                box-sizing: border-box;
+            }
+            .box {
+                background-color:lightblue;
+                border-color:black;
+                border-width:2px;
+            }
+            .leftbubble {
+                background-color:blue;
+                
+            }
+
+            button {
+                background-color:aquamarine;
+                color: black;
+                padding: 14px 20px;
+                margin: 8px 0;
+                border: none;
+                cursor: pointer;
+                width: 100%;
+            }
+
+            button:hover {
+                opacity: 0.7;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="box"><h2>Chat with the AI</h2></div>
+        <div id="input">
+            <input type="text" id="messageInput" placeholder="Enter your messsage here...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+        <div id="messages"></div>
+        <script>
+            const messagesDiv = document.getElementById('messages');
+            async function fetchMessage(){
+                try{
+                    const response = await fetch('/chat');
+                    const data = await response.json();
+
+                    messagesDiv.innerHTML = '';
+                    const messageElement = document.createElement('div');
+                    for (message of data){
+                        const messageElement = document.createElement('div');
+                        messageElement.textContent = message;
+                        messagesDiv.appendChild(messageElement);
+                    }
+                } catch (error){
+                    console.error('Error fetching message:', error);
+                }
+            }
+            
+            async function sendMessage() {
+                const input = document.getElementById('messageInput');
+                const message = input.value;
+
+                const messageElement = document.createElement('div');
+                messageElement.textContent = message;
+                messageElement.className = "rightbubble";
+                messagesDiv.appendChild(messageElement);
+
+                if (message) {
+                    try {
+                        await fetch('/chat', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({message})
+                        });
+                    } catch (error) {
+                        console.error('Error sending message:', error);
+                    }
+                }
+            }
+
+            // Polling function to repeatedly fetch new messages
+            
+            function startPolling() {
+                fetchMessage(); // Initial fetch
+                setInterval(fetchMessage, 1000); // Fetch new messages every 5 seconds
+            }  
+
+            // Start polling when the page loads
+            window.onload = startPolling;
+            
+        </script>
+    </body>
+
+</html>
