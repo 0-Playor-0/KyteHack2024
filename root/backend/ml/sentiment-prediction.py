@@ -4,7 +4,7 @@ import os
 import json
 import sys
 
-print(os.getcwd())
+os.chdir("/Users/davidsong/KyteHack2024/root/backend/ml")
 
 # Load the model
 with open('sentiment_clf.pkl', 'rb') as model_file:
@@ -18,4 +18,4 @@ if __name__ == "__main__":
     input_data = json.loads(sys.stdin.read())
     text = input_data['text']
     result = predict([text])
-    print(json.dumps({'prediction': result[0]}))
+    print(json.dumps({'prediction': str(result[0])}))
